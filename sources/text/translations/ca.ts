@@ -533,6 +533,8 @@ export const ca: TranslationStructure = {
         languageDescription: 'Tria el teu idioma preferit per a les interaccions amb l\'assistent de veu. Aquesta configuració es sincronitza a tots els teus dispositius.',
         preferredLanguage: 'Idioma preferit',
         preferredLanguageSubtitle: 'Idioma utilitzat per a les respostes de l\'assistent de veu',
+        agentIdTitle: 'ID de l\'agent ElevenLabs',
+        agentIdPlaceholder: 'agent_XXXXXXXXXXXXXXXXXXXXXXXX',
         language: {
             searchPlaceholder: 'Cerca idiomes...',
             title: 'Idiomes',

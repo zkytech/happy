@@ -535,6 +535,8 @@ export const zhHans: TranslationStructure = {
         languageDescription: '选择您希望语音助手交互使用的语言。此设置将在您的所有设备间同步。',
         preferredLanguage: '首选语言',
         preferredLanguageSubtitle: '语音助手响应使用的语言',
+        agentIdTitle: 'ElevenLabs 代理 ID',
+        agentIdPlaceholder: 'agent_XXXXXXXXXXXXXXXXXXXXXXXX',
         language: {
             searchPlaceholder: '搜索语言...',
             title: '语言',

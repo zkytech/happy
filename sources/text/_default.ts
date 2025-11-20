@@ -533,6 +533,8 @@ export const en = {
         languageDescription: 'Choose your preferred language for voice assistant interactions. This setting syncs across all your devices.',
         preferredLanguage: 'Preferred Language',
         preferredLanguageSubtitle: 'Language used for voice assistant responses',
+        agentIdTitle: 'ElevenLabs Agent ID',
+        agentIdPlaceholder: 'agent_XXXXXXXXXXXXXXXXXXXXXXXX',
         language: {
             searchPlaceholder: 'Search languages...',
             title: 'Languages',

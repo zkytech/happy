@@ -533,6 +533,8 @@ export const pt: TranslationStructure = {
         languageDescription: 'Escolha seu idioma preferido para interações com o assistente de voz. Esta configuração sincroniza em todos os seus dispositivos.',
         preferredLanguage: 'Idioma preferido',
         preferredLanguageSubtitle: 'Idioma usado para respostas do assistente de voz',
+        agentIdTitle: 'ID do agente ElevenLabs',
+        agentIdPlaceholder: 'agent_XXXXXXXXXXXXXXXXXXXXXXXX',
         language: {
             searchPlaceholder: 'Buscar idiomas...',
             title: 'Idiomas',

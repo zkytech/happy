@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useConversation } from '@elevenlabs/react';
 import { registerVoiceSession } from './RealtimeSession';
 import { storage } from '@/sync/storage';
+import { settingsDefaults } from '@/sync/settings';
 import { realtimeClientTools } from './realtimeClientTools';
 import { getElevenLabsCodeFromPreference } from '@/constants/Languages';
 import type { VoiceSession, VoiceSessionConfig } from './types';
@@ -31,13 +32,24 @@ class RealtimeVoiceSessionImpl implements VoiceSession {
             }
 
 
+            // Read current settings
+            const settings = storage.getState().settings;
+
             // Get user's preferred language for voice assistant
-            const userLanguagePreference = storage.getState().settings.voiceAssistantLanguage;
+            const userLanguagePreference = settings.voiceAssistantLanguage;
             const elevenLabsLanguage = getElevenLabsCodeFromPreference(userLanguagePreference);
-            
-            // Use hardcoded agent ID for Eleven Labs
+
+            // Resolve agent ID from settings, falling back to default production agent
+            const agentId = settings.voiceAssistantAgentId || settingsDefaults.voiceAssistantAgentId;
+
+            if (!agentId) {
+                console.warn('No ElevenLabs agent ID configured for voice assistant');
+                storage.getState().setRealtimeStatus('error');
+                return;
+            }
+
             const conversationId = await conversationInstance.startSession({
-                agentId: __DEV__ ? 'agent_7801k2c0r5hjfraa1kdbytpvs6yt' : 'agent_6701k211syvvegba4kt7m68nxjmw',
+                agentId,
                 connectionType: 'webrtc', // Use WebRTC for better performance
                 // Pass session ID and initial context as dynamic variables
                 dynamicVariables: {
