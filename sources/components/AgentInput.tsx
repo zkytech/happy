@@ -290,9 +290,11 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
     const screenWidth = useWindowDimensions().width;
 
     const hasText = props.value.trim().length > 0;
-    
+
     // Check if this is a Codex session
-    const isCodex = props.metadata?.flavor === 'codex';
+    // For existing sessions we rely on metadata.flavor, while for the
+    // "new session" screen we use the explicit agentType prop.
+    const isCodex = props.agentType === 'codex' || props.metadata?.flavor === 'codex';
 
     // Calculate context warning
     const contextWarning = props.usageData?.contextSize
@@ -535,7 +537,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                     <Text style={styles.overlaySectionTitle}>
                                         {isCodex ? t('agentInput.codexPermissionMode.title') : t('agentInput.permissionMode.title')}
                                     </Text>
-                                    {(isCodex 
+                                    {(isCodex
                                         ? (['default', 'read-only', 'safe-yolo', 'yolo'] as const)
                                         : (['default', 'acceptEdits', 'plan', 'bypassPermissions'] as const)
                                     ).map((mode) => {
@@ -616,7 +618,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                     }}>
                                         {isCodex ? t('agentInput.codexModel.title') : t('agentInput.model.title')}
                                     </Text>
-                                    {(isCodex 
+                                    {(isCodex
                                         ? (['gpt-5-codex-high', 'gpt-5-codex-medium', 'gpt-5-codex-low', 'default', 'gpt-5-minimal', 'gpt-5-low', 'gpt-5-medium', 'gpt-5-high'] as const)
                                         : (['default', 'adaptiveUsage', 'sonnet', 'opus'] as const)
                                     ).map((model) => {

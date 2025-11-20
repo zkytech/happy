@@ -111,11 +111,15 @@ function NewSessionScreen() {
     const safeArea = useSafeAreaInsets();
     const screenWidth = useWindowDimensions().width;
 
-    // Load recent machine paths and last used agent from settings
+    // Load recent machine paths, agent defaults, and last used values from settings
     const recentMachinePaths = useSetting('recentMachinePaths');
     const lastUsedAgent = useSetting('lastUsedAgent');
     const lastUsedPermissionMode = useSetting('lastUsedPermissionMode');
     const lastUsedModelMode = useSetting('lastUsedModelMode');
+    const claudeDefaultPermissionMode = useSetting('claudeDefaultPermissionMode');
+    const claudeDefaultModelMode = useSetting('claudeDefaultModelMode');
+    const codexDefaultPermissionMode = useSetting('codexDefaultPermissionMode');
+    const codexDefaultModelMode = useSetting('codexDefaultModelMode');
     const experimentsEnabled = useSetting('experiments');
 
     //
@@ -220,47 +224,106 @@ function NewSessionScreen() {
     //
 
     const [permissionMode, setPermissionMode] = React.useState<PermissionMode>(() => {
-        // Initialize with last used permission mode if valid, otherwise default to 'default'
+        // Initialize with per-agent defaults if configured, otherwise fall back to last used or sensible defaults
         const validClaudeModes: PermissionMode[] = ['default', 'acceptEdits', 'plan', 'bypassPermissions'];
         const validCodexModes: PermissionMode[] = ['default', 'read-only', 'safe-yolo', 'yolo'];
 
-        if (lastUsedPermissionMode) {
-            if (agentType === 'codex' && validCodexModes.includes(lastUsedPermissionMode as PermissionMode)) {
-                return lastUsedPermissionMode as PermissionMode;
-            } else if (agentType === 'claude' && validClaudeModes.includes(lastUsedPermissionMode as PermissionMode)) {
+        if (agentType === 'codex') {
+            if (codexDefaultPermissionMode && validCodexModes.includes(codexDefaultPermissionMode as PermissionMode)) {
+                return codexDefaultPermissionMode as PermissionMode;
+            }
+            if (lastUsedPermissionMode && validCodexModes.includes(lastUsedPermissionMode as PermissionMode)) {
                 return lastUsedPermissionMode as PermissionMode;
             }
+            return 'default';
+        } else {
+            if (claudeDefaultPermissionMode && validClaudeModes.includes(claudeDefaultPermissionMode as PermissionMode)) {
+                return claudeDefaultPermissionMode as PermissionMode;
+            }
+            if (lastUsedPermissionMode && validClaudeModes.includes(lastUsedPermissionMode as PermissionMode)) {
+                return lastUsedPermissionMode as PermissionMode;
+            }
+            return 'default';
         }
-        return 'default';
     });
 
     const [modelMode, setModelMode] = React.useState<ModelMode>(() => {
-        // Initialize with last used model mode if valid, otherwise default
+        // Initialize with per-agent defaults if configured, otherwise fall back to last used or sensible defaults
         const validClaudeModes: ModelMode[] = ['default', 'adaptiveUsage', 'sonnet', 'opus'];
         const validCodexModes: ModelMode[] = ['gpt-5-codex-high', 'gpt-5-codex-medium', 'gpt-5-codex-low', 'default', 'gpt-5-minimal', 'gpt-5-low', 'gpt-5-medium', 'gpt-5-high'];
 
-        if (lastUsedModelMode) {
-            if (agentType === 'codex' && validCodexModes.includes(lastUsedModelMode as ModelMode)) {
-                return lastUsedModelMode as ModelMode;
-            } else if (agentType === 'claude' && validClaudeModes.includes(lastUsedModelMode as ModelMode)) {
+        if (agentType === 'codex') {
+            if (codexDefaultModelMode && validCodexModes.includes(codexDefaultModelMode as ModelMode)) {
+                return codexDefaultModelMode as ModelMode;
+            }
+            if (lastUsedModelMode && validCodexModes.includes(lastUsedModelMode as ModelMode)) {
                 return lastUsedModelMode as ModelMode;
             }
+            return 'gpt-5-codex-high';
+        } else {
+            if (claudeDefaultModelMode && validClaudeModes.includes(claudeDefaultModelMode as ModelMode)) {
+                return claudeDefaultModelMode as ModelMode;
+            }
+            if (lastUsedModelMode && validClaudeModes.includes(lastUsedModelMode as ModelMode)) {
+                return lastUsedModelMode as ModelMode;
+            }
+            return 'default';
         }
-        return agentType === 'codex' ? 'gpt-5-codex-high' : 'default';
     });
 
     // Reset permission and model modes when agent type changes
     React.useEffect(() => {
+        const validClaudeModes: PermissionMode[] = ['default', 'acceptEdits', 'plan', 'bypassPermissions'];
+        const validCodexModes: PermissionMode[] = ['default', 'read-only', 'safe-yolo', 'yolo'];
+        const validClaudeModelModes: ModelMode[] = ['default', 'adaptiveUsage', 'sonnet', 'opus'];
+        const validCodexModelModes: ModelMode[] = ['gpt-5-codex-high', 'gpt-5-codex-medium', 'gpt-5-codex-low', 'default', 'gpt-5-minimal', 'gpt-5-low', 'gpt-5-medium', 'gpt-5-high'];
+
         if (agentType === 'codex') {
-            // Switch to codex-compatible modes
-            setPermissionMode('default');
-            setModelMode('gpt-5-codex-high');
+            // Switch to Codex-compatible modes using configured defaults if available
+            let nextPermission: PermissionMode = 'default';
+            if (codexDefaultPermissionMode && validCodexModes.includes(codexDefaultPermissionMode as PermissionMode)) {
+                nextPermission = codexDefaultPermissionMode as PermissionMode;
+            } else if (lastUsedPermissionMode && validCodexModes.includes(lastUsedPermissionMode as PermissionMode)) {
+                nextPermission = lastUsedPermissionMode as PermissionMode;
+            }
+
+            let nextModel: ModelMode = 'gpt-5-codex-high';
+            if (codexDefaultModelMode && validCodexModelModes.includes(codexDefaultModelMode as ModelMode)) {
+                nextModel = codexDefaultModelMode as ModelMode;
+            } else if (lastUsedModelMode && validCodexModelModes.includes(lastUsedModelMode as ModelMode)) {
+                nextModel = lastUsedModelMode as ModelMode;
+            }
+
+            setPermissionMode(nextPermission);
+            setModelMode(nextModel);
         } else {
-            // Switch to claude-compatible modes
-            setPermissionMode('default');
-            setModelMode('default');
+            // Switch to Claude-compatible modes using configured defaults if available
+            let nextPermission: PermissionMode = 'default';
+            if (claudeDefaultPermissionMode && validClaudeModes.includes(claudeDefaultPermissionMode as PermissionMode)) {
+                nextPermission = claudeDefaultPermissionMode as PermissionMode;
+            } else if (lastUsedPermissionMode && validClaudeModes.includes(lastUsedPermissionMode as PermissionMode)) {
+                nextPermission = lastUsedPermissionMode as PermissionMode;
+            }
+
+            let nextModel: ModelMode = 'default';
+            if (claudeDefaultModelMode && validClaudeModelModes.includes(claudeDefaultModelMode as ModelMode)) {
+                nextModel = claudeDefaultModelMode as ModelMode;
+            } else if (lastUsedModelMode && validClaudeModelModes.includes(lastUsedModelMode as ModelMode)) {
+                nextModel = lastUsedModelMode as ModelMode;
+            }
+
+            setPermissionMode(nextPermission);
+            setModelMode(nextModel);
         }
-    }, [agentType]);
+    }, [
+        agentType,
+        claudeDefaultPermissionMode,
+        claudeDefaultModelMode,
+        codexDefaultPermissionMode,
+        codexDefaultModelMode,
+        lastUsedPermissionMode,
+        lastUsedModelMode,
+    ]);
 
     const handlePermissionModeChange = React.useCallback((mode: PermissionMode) => {
         setPermissionMode(mode);

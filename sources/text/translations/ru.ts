@@ -90,6 +90,8 @@ export const ru: TranslationStructure = {
         appearanceSubtitle: 'Настройка внешнего вида приложения',
         voiceAssistant: 'Голосовой ассистент',
         voiceAssistantSubtitle: 'Настройка предпочтений голосового взаимодействия',
+        agentDefaults: 'Профили агента по умолчанию',
+        agentDefaultsSubtitle: 'Задайте режимы прав и моделей по умолчанию для Claude Code и Codex',
         featuresTitle: 'Возможности',
         featuresSubtitle: 'Включить или отключить функции приложения',
         developer: 'Разработчик',

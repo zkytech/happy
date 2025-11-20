@@ -107,6 +107,8 @@ export const en = {
         appearanceSubtitle: 'Customize how the app looks',
         voiceAssistant: 'Voice Assistant',
         voiceAssistantSubtitle: 'Configure voice interaction preferences',
+        agentDefaults: 'Agent Defaults',
+        agentDefaultsSubtitle: 'Set default permission modes and models for Claude Code and Codex',
         featuresTitle: 'Features',
         featuresSubtitle: 'Enable or disable app features',
         developer: 'Developer',

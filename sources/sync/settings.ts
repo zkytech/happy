@@ -21,6 +21,7 @@ export const SettingsSchema = z.object({
     reviewPromptAnswered: z.boolean().describe('Whether the review prompt has been answered'),
     reviewPromptLikedApp: z.boolean().nullish().describe('Whether user liked the app when asked'),
     voiceAssistantLanguage: z.string().nullable().describe('Preferred language for voice assistant (null for auto-detect)'),
+    voiceAssistantAgentId: z.string().optional().describe('ElevenLabs agent ID for voice assistant'),
     preferredLanguage: z.string().nullable().describe('Preferred UI language (null for auto-detect from device locale)'),
     recentMachinePaths: z.array(z.object({
         machineId: z.string(),
@@ -29,6 +30,10 @@ export const SettingsSchema = z.object({
     lastUsedAgent: z.string().nullable().describe('Last selected agent type for new sessions'),
     lastUsedPermissionMode: z.string().nullable().describe('Last selected permission mode for new sessions'),
     lastUsedModelMode: z.string().nullable().describe('Last selected model mode for new sessions'),
+    claudeDefaultPermissionMode: z.string().nullable().describe('Default permission mode for Claude Code sessions'),
+    claudeDefaultModelMode: z.string().nullable().describe('Default model mode for Claude Code sessions'),
+    codexDefaultPermissionMode: z.string().nullable().describe('Default permission mode for Codex sessions'),
+    codexDefaultModelMode: z.string().nullable().describe('Default model mode for Codex sessions'),
 });
 
 //
@@ -67,11 +72,20 @@ export const settingsDefaults: Settings = {
     reviewPromptAnswered: false,
     reviewPromptLikedApp: null,
     voiceAssistantLanguage: null,
+    // Default ElevenLabs production agent ID for voice assistant
+    voiceAssistantAgentId: __DEV__ ? 'agent_7801k2c0r5hjfraa1kdbytpvs6yt' : 'agent_6701k211syvvegba4kt7m68nxjmw',
     preferredLanguage: null,
     recentMachinePaths: [],
     lastUsedAgent: null,
     lastUsedPermissionMode: null,
     lastUsedModelMode: null,
+    // Default to 'default' so both Claude Code and Codex start by using
+    // the CLI's own permission configuration instead of any YOLO-style modes.
+    // The UI labels this as "Use CLI settings".
+    claudeDefaultPermissionMode: 'default',
+    claudeDefaultModelMode: null,
+    codexDefaultPermissionMode: 'default',
+    codexDefaultModelMode: null,
 };
 Object.freeze(settingsDefaults);
 
@@ -84,13 +98,13 @@ export function settingsParse(settings: unknown): Settings {
     if (!parsed.success) {
         return { ...settingsDefaults };
     }
-    
+
     // Migration: Convert old 'zh' language code to 'zh-Hans'
     if (parsed.data.preferredLanguage === 'zh') {
         console.log('[Settings Migration] Converting language code from "zh" to "zh-Hans"');
         parsed.data.preferredLanguage = 'zh-Hans';
     }
-    
+
     return { ...settingsDefaults, ...parsed.data };
 }
 

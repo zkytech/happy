@@ -107,6 +107,8 @@ export const pt: TranslationStructure = {
         appearanceSubtitle: 'Personalize a aparência do aplicativo',
         voiceAssistant: 'Assistente de voz',
         voiceAssistantSubtitle: 'Configure as preferências de interação por voz',
+        agentDefaults: 'Padrões do agente',
+        agentDefaultsSubtitle: 'Defina modos de permissão e modelos padrão para Claude Code e Codex',
         featuresTitle: 'Recursos',
         featuresSubtitle: 'Ativar ou desativar recursos do aplicativo',
         developer: 'Desenvolvedor',

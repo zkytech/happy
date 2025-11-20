@@ -107,6 +107,8 @@ export const ca: TranslationStructure = {
         appearanceSubtitle: 'Personalitza l\'aspecte de l\'aplicació',
         voiceAssistant: 'Assistent de veu',
         voiceAssistantSubtitle: 'Configura les preferències d\'interacció per veu',
+        agentDefaults: 'Valors per defecte de l\'agent',
+        agentDefaultsSubtitle: 'Defineix modes de permís i models per defecte per a Claude Code i Codex',
         featuresTitle: 'Funcions',
         featuresSubtitle: 'Activa o desactiva les funcions de l\'aplicació',
         developer: 'Desenvolupador',

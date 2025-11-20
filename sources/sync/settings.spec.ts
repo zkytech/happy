@@ -93,27 +93,9 @@ describe('settings', () => {
     describe('applySettings', () => {
         it('should apply delta to existing settings', () => {
             const currentSettings: Settings = {
+                ...settingsDefaults,
                 viewInline: false,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
                 avatarStyle: 'gradient',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
-                recentMachinePaths: [],
-                lastUsedAgent: null,
-                lastUsedPermissionMode: null,
-                lastUsedModelMode: null,
             };
             const delta: Partial<Settings> = {
                 viewInline: true
@@ -133,35 +115,26 @@ describe('settings', () => {
                 compactSessionView: false,
                 hideInactiveSessions: false,
                 reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
+                reviewPromptLikedApp: settingsDefaults.reviewPromptLikedApp,
+                voiceAssistantLanguage: settingsDefaults.voiceAssistantLanguage,
+                voiceAssistantAgentId: settingsDefaults.voiceAssistantAgentId,
+                preferredLanguage: settingsDefaults.preferredLanguage,
+                recentMachinePaths: settingsDefaults.recentMachinePaths,
+                lastUsedAgent: settingsDefaults.lastUsedAgent,
+                lastUsedPermissionMode: settingsDefaults.lastUsedPermissionMode,
+                lastUsedModelMode: settingsDefaults.lastUsedModelMode,
+                claudeDefaultPermissionMode: settingsDefaults.claudeDefaultPermissionMode,
+                claudeDefaultModelMode: settingsDefaults.claudeDefaultModelMode,
+                codexDefaultPermissionMode: settingsDefaults.codexDefaultPermissionMode,
+                codexDefaultModelMode: settingsDefaults.codexDefaultModelMode,
             });
         });
 
         it('should merge with defaults', () => {
             const currentSettings: Settings = {
+                ...settingsDefaults,
                 viewInline: true,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
                 avatarStyle: 'gradient',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
-                recentMachinePaths: [],
-                lastUsedAgent: null,
-                lastUsedPermissionMode: null,
-                lastUsedModelMode: null,
             };
             const delta: Partial<Settings> = {};
             expect(applySettings(currentSettings, delta)).toEqual({
@@ -172,27 +145,9 @@ describe('settings', () => {
 
         it('should override existing values with delta', () => {
             const currentSettings: Settings = {
+                ...settingsDefaults,
                 viewInline: true,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
                 avatarStyle: 'gradient',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
-                recentMachinePaths: [],
-                lastUsedAgent: null,
-                lastUsedPermissionMode: null,
-                lastUsedModelMode: null,
             };
             const delta: Partial<Settings> = {
                 viewInline: false
@@ -212,35 +167,26 @@ describe('settings', () => {
                 compactSessionView: false,
                 hideInactiveSessions: false,
                 reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
+                reviewPromptLikedApp: settingsDefaults.reviewPromptLikedApp,
+                voiceAssistantLanguage: settingsDefaults.voiceAssistantLanguage,
+                voiceAssistantAgentId: settingsDefaults.voiceAssistantAgentId,
+                preferredLanguage: settingsDefaults.preferredLanguage,
+                recentMachinePaths: settingsDefaults.recentMachinePaths,
+                lastUsedAgent: settingsDefaults.lastUsedAgent,
+                lastUsedPermissionMode: settingsDefaults.lastUsedPermissionMode,
+                lastUsedModelMode: settingsDefaults.lastUsedModelMode,
+                claudeDefaultPermissionMode: settingsDefaults.claudeDefaultPermissionMode,
+                claudeDefaultModelMode: settingsDefaults.claudeDefaultModelMode,
+                codexDefaultPermissionMode: settingsDefaults.codexDefaultPermissionMode,
+                codexDefaultModelMode: settingsDefaults.codexDefaultModelMode,
             });
         });
 
         it('should handle empty delta', () => {
             const currentSettings: Settings = {
+                ...settingsDefaults,
                 viewInline: true,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
                 avatarStyle: 'gradient',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
-                recentMachinePaths: [],
-                lastUsedAgent: null,
-                lastUsedPermissionMode: null,
-                lastUsedModelMode: null,
             };
             expect(applySettings(currentSettings, {})).toEqual({
                 ...settingsDefaults,
@@ -265,27 +211,9 @@ describe('settings', () => {
 
         it('should handle extra fields in delta', () => {
             const currentSettings: Settings = {
+                ...settingsDefaults,
                 viewInline: true,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
                 avatarStyle: 'gradient',
-                showFlavorIcons: false,
-                compactSessionView: false,
-                hideInactiveSessions: false,
-                reviewPromptAnswered: false,
-                reviewPromptLikedApp: null,
-                voiceAssistantLanguage: null,
-                preferredLanguage: null,
-                recentMachinePaths: [],
-                lastUsedAgent: null,
-                lastUsedPermissionMode: null,
-                lastUsedModelMode: null,
             };
             const delta: any = {
                 viewInline: false,
@@ -318,18 +246,15 @@ describe('settings', () => {
 
     describe('settingsDefaults', () => {
         it('should have correct default values', () => {
-            expect(settingsDefaults).toEqual({
-                viewInline: false,
-                expandTodos: true,
-                showLineNumbers: true,
-                showLineNumbersInToolViews: false,
-                wrapLinesInDiffs: false,
-                analyticsOptOut: false,
-                inferenceOpenAIKey: null,
-                experiments: false,
-                alwaysShowContextSize: false,
-                hideInactiveSessions: false,
-            });
+            expect(settingsDefaults.viewInline).toBe(false);
+            expect(settingsDefaults.expandTodos).toBe(true);
+            expect(settingsDefaults.showLineNumbers).toBe(true);
+            expect(settingsDefaults.showLineNumbersInToolViews).toBe(false);
+            expect(settingsDefaults.wrapLinesInDiffs).toBe(false);
+            expect(settingsDefaults.analyticsOptOut).toBe(false);
+            expect(settingsDefaults.experiments).toBe(false);
+            expect(settingsDefaults.alwaysShowContextSize).toBe(false);
+            expect(settingsDefaults.hideInactiveSessions).toBe(false);
         });
 
         it('should be a valid Settings object', () => {

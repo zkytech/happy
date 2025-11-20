@@ -109,6 +109,8 @@ export const zhHans: TranslationStructure = {
         appearanceSubtitle: '自定义应用外观',
         voiceAssistant: '语音助手',
         voiceAssistantSubtitle: '配置语音交互偏好',
+        agentDefaults: '代理默认设置',
+        agentDefaultsSubtitle: '为 Claude Code 和 Codex 配置默认权限模式和模型',
         featuresTitle: '功能',
         featuresSubtitle: '启用或禁用应用功能',
         developer: '开发者',
