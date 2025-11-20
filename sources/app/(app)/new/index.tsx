@@ -127,7 +127,6 @@ function NewSessionScreen() {
         if (machines.length > 0) {
             // Check if we have a recently used machine that's currently available
             if (recentMachinePaths.length > 0) {
-                // Find the first machine from recent paths that's currently available
                 for (const recent of recentMachinePaths) {
                     if (machines.find(m => m.id === recent.machineId)) {
                         return recent.machineId;
@@ -139,42 +138,35 @@ function NewSessionScreen() {
         }
         return null;
     });
-    React.useEffect(() => {
-        if (machines.length > 0) {
-            if (!selectedMachineId) {
-                // No machine selected yet, prefer the most recently used machine
-                let machineToSelect = machines[0].id; // Default to first machine
 
-                // Check if we have a recently used machine that's currently available
-                if (recentMachinePaths.length > 0) {
-                    for (const recent of recentMachinePaths) {
-                        if (machines.find(m => m.id === recent.machineId)) {
-                            machineToSelect = recent.machineId;
-                            break; // Use the first (most recent) match
-                        }
+    // Keep selected machine and its path in sync with latest machines/settings
+    React.useEffect(() => {
+        if (machines.length === 0) {
+            return;
+        }
+
+        let machineId = selectedMachineId;
+
+        // If no machine selected yet, prefer the most recently used machine
+        if (!machineId) {
+            let machineToSelect = machines[0].id; // Default to first machine
+
+            if (recentMachinePaths.length > 0) {
+                for (const recent of recentMachinePaths) {
+                    if (machines.find(m => m.id === recent.machineId)) {
+                        machineToSelect = recent.machineId;
+                        break;
                     }
                 }
-
-                setSelectedMachineId(machineToSelect);
-                // Also set the best path for the selected machine
-                const bestPath = getRecentPathForMachine(machineToSelect, recentMachinePaths);
-                setSelectedPath(bestPath);
-            } else {
-                // Machine is already selected, but check if we need to update path
-                // This handles the case where machines load after initial render
-                const currentMachine = machines.find(m => m.id === selectedMachineId);
-                if (currentMachine) {
-                    // Update path based on recent paths (only if path hasn't been manually changed)
-                    const bestPath = getRecentPathForMachine(selectedMachineId, recentMachinePaths);
-                    setSelectedPath(prevPath => {
-                        // Only update if current path is the default /home/
-                        if (prevPath === '/home/' && bestPath !== '/home/') {
-                            return bestPath;
-                        }
-                        return prevPath;
-                    });
-                }
             }
+
+            setSelectedMachineId(machineToSelect);
+            machineId = machineToSelect;
+        }
+
+        if (machineId) {
+            const bestPath = getRecentPathForMachine(machineId, recentMachinePaths);
+            setSelectedPath(bestPath);
         }
     }, [machines, selectedMachineId, recentMachinePaths]);
 
@@ -193,16 +185,6 @@ function NewSessionScreen() {
             onMachineSelected = () => { };
         };
     }, [recentMachinePaths]);
-
-    React.useEffect(() => {
-        let handler = (path: string) => {
-            setSelectedPath(path);
-        };
-        onPathSelected = handler;
-        return () => {
-            onPathSelected = () => { };
-        };
-    }, []);
 
     const handleMachineClick = React.useCallback(() => {
         router.push('/new/pick/machine');
@@ -302,9 +284,15 @@ function NewSessionScreen() {
     });
     const handlePathClick = React.useCallback(() => {
         if (selectedMachineId) {
-            router.push(`/new/pick/path?machineId=${selectedMachineId}`);
+            router.push({
+                pathname: '/new/pick/path',
+                params: {
+                    machineId: selectedMachineId,
+                    selectedPath: selectedPath || '',
+                },
+            });
         }
-    }, [selectedMachineId, router]);
+    }, [selectedMachineId, selectedPath, router]);
 
     // Get selected machine name
     const selectedMachine = React.useMemo(() => {

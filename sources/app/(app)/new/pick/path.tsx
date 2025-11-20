@@ -10,6 +10,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { layout } from '@/components/layout';
 import { t } from '@/text';
 import { MultiTextInput, MultiTextInputHandle } from '@/components/MultiTextInput';
+import { sync } from '@/sync/sync';
 import { callbacks } from '../index';
 
 const stylesheet = StyleSheet.create((theme) => ({
@@ -57,6 +58,17 @@ const stylesheet = StyleSheet.create((theme) => ({
         borderColor: theme.colors.divider,
     },
 }));
+
+// Helper to keep recentMachinePaths in sync with the last path picked for a machine
+const updateRecentMachinePaths = (
+    currentPaths: Array<{ machineId: string; path: string }>,
+    machineId: string,
+    path: string
+): Array<{ machineId: string; path: string }> => {
+    const filtered = currentPaths.filter(rp => rp.machineId !== machineId);
+    const updated = [{ machineId, path }, ...filtered];
+    return updated.slice(0, 10);
+};
 
 export default function PathPickerScreen() {
     const { theme } = useUnistyles();
@@ -122,10 +134,22 @@ export default function PathPickerScreen() {
 
     const handleSelectPath = React.useCallback(() => {
         const pathToUse = customPath.trim() || machine?.metadata?.homeDir || '/home';
-        // Set the selection and go back
+
+        // Persist the choice so the new-session screen can always reflect it,
+        // even if the in-memory callback wiring fails for some reason.
+        if (params.machineId) {
+            const updatedPaths = updateRecentMachinePaths(
+                recentMachinePaths,
+                params.machineId,
+                pathToUse
+            );
+            sync.applySettings({ recentMachinePaths: updatedPaths });
+        }
+
+        // Best-effort notify any live new-session screen
         callbacks.onPathSelected(pathToUse);
         router.back();
-    }, [customPath, router, machine]);
+    }, [customPath, router, machine, params.machineId, recentMachinePaths]);
 
     if (!machine) {
         return (
